@@ -1,0 +1,41 @@
+version: "3.3"
+services:
+  redis:
+    image: redis:5.0.13
+    container_name: redis
+    hostname: redis
+    volumes:
+      - redis_volume:/data
+    networks:
+      - infodeniz_network
+    restart: on-failure
+  postgres_db:
+    image: postgres:12.7
+    container_name: postgres_db
+    hostname: postgres_db
+    env_file:
+      - ./.env.postgres
+    volumes:
+      - postgres_db_volume:/var/lib/postgresql/data
+    networks:
+      - infodeniz_network
+    restart: on-failure
+  fake_smtp_server:
+    image: ghusta/fakesmtp
+    container_name: fake_smtp_server
+    hostname: fake_smtp_server
+    volumes:
+      - fake_smtp_server_volume:/var/var/mail
+    networks:
+      - infodeniz_network
+    restart: on-failure
+  
+  
+volumes:
+  redis_volume:
+  postgres_db_volume:
+  fake_smtp_server_volume:
+
+networks:
+  infodeniz_network:
+    external: true

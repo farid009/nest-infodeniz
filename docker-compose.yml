@@ -1,0 +1,25 @@
+version: '3.3'
+services:
+  infodeniz_backend:
+    build:
+      context: .
+    image: infodeniz_backend
+    container_name: infodeniz_backend
+    hostname: infodeniz_backend
+    command: sh run.sh
+    env_file:
+      - .env
+    volumes:
+      - infodeniz_data:${STATIC_FILES_PATH}
+    networks:
+      - infodeniz_network
+    ports:
+      - ${HTTP_SERVER_PORT}:${HTTP_SERVER_PORT}
+    restart: always
+    
+volumes:
+  infodeniz_data:
+
+networks:
+  infodeniz_network:
+    external: true

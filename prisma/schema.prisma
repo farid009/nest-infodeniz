@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model File {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamptz(0)
+  updatedAt   DateTime? @default(now()) @map("updated_at") @db.Timestamptz(0)
+  name        String    @db.VarChar(255)
+  extension   String?   @db.VarChar(255)
+  mimetype    String?   @db.VarChar(255)
+  accessUrl   String    @map("access_url")
+  ownerUserId Int?      @map("owner_user_id")
+  ownerUser   User?     @relation(fields: [ownerUserId], references: [id])
+
+  @@map("file")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(0)
+  updatedAt DateTime? @default(now()) @map("updated_at") @db.Timestamptz(0)
+  name      String?   @db.VarChar(255)
+  email     String    @db.VarChar(255)
+  password  String    @db.VarChar(255)
+  files     File[]
+
+  @@unique([email], map: "use_email_u")
+  @@map("user")
+}
+
+model Log {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(0)
+  updatedAt DateTime? @default(now()) @map("updated_at") @db.Timestamptz(0)
+  ip        String
+  context   Json
+
+  @@map("log")
+}
+
+model CasbinRule {
+  id    Int     @id @default(autoincrement())
+  ptype String
+  v0    String?
+  v1    String?
+  v2    String?
+  v3    String?
+  v4    String?
+  v5    String?
+
+  @@map("casbin_rule")
+}
